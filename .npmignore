@@ -1,0 +1,29 @@
+# Source — only ship compiled lib/
+src/
+__tests__/
+__mocks__/
+example/
+scripts/
+.github/
+
+# Configs
+tsconfig*.json
+jest.config.*
+.eslintrc*
+eslint.config.*
+.prettierrc*
+prettier.config.*
+babel.config.*
+.editorconfig
+.watchmanconfig
+
+# Dev artifacts
+node_modules/
+coverage/
+*.log
+*.tgz
+.DS_Store
+
+# Docs not needed in tarball
+CONTRIBUTING.md
+CHANGELOG.md

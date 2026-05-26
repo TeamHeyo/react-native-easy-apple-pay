@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "easy-apple-pay-example",
+    "slug": "easy-apple-pay-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.example.easyapplepay",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Not used; required placeholder."
+      },
+      "entitlements": {
+        "com.apple.developer.in-app-payments": [
+          "merchant.com.example.easyapplepay"
+        ]
+      }
+    },
+    "plugins": [
+      "expo-dev-client",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
+    ]
+  }
+}
