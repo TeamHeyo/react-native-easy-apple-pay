@@ -11,6 +11,9 @@ class RNEasyApplePay: RCTEventEmitter, PKPaymentAuthorizationViewControllerDeleg
     private var shippingContactCompletion: ((PKPaymentRequestShippingContactUpdate) -> Void)?
     private var shippingMethodCompletion: ((PKPaymentRequestShippingMethodUpdate) -> Void)?
     private weak var presentedController: PKPaymentAuthorizationViewController?
+    // The request we presented with. PKPaymentAuthorizationViewController no longer
+    // exposes `paymentRequest`, so we keep our own reference for the delegate paths.
+    private var currentRequest: PKPaymentRequest?
     private var hasListeners = false
 
     // MARK: - RCTEventEmitter
@@ -136,6 +139,7 @@ class RNEasyApplePay: RCTEventEmitter, PKPaymentAuthorizationViewControllerDeleg
             }
             vc.delegate = self
             self.presentedController = vc
+            self.currentRequest = request
 
             guard let topVC = self.topViewController() else {
                 self.failPayment("NO_VIEW_CONTROLLER", "No root view controller found to present Apple Pay sheet.")
@@ -322,8 +326,8 @@ class RNEasyApplePay: RCTEventEmitter, PKPaymentAuthorizationViewControllerDeleg
         guard hasListeners else {
             completion(PKPaymentRequestShippingContactUpdate(
                 errors: nil,
-                paymentSummaryItems: controller.paymentRequest.paymentSummaryItems,
-                shippingMethods: controller.paymentRequest.shippingMethods ?? []
+                paymentSummaryItems: self.currentRequest?.paymentSummaryItems ?? [],
+                shippingMethods: self.currentRequest?.shippingMethods ?? []
             ))
             return
         }
@@ -334,11 +338,11 @@ class RNEasyApplePay: RCTEventEmitter, PKPaymentAuthorizationViewControllerDeleg
 
     func paymentAuthorizationViewController(
         _ controller: PKPaymentAuthorizationViewController,
-        didSelectShippingMethod shippingMethod: PKShippingMethod,
+        didSelect shippingMethod: PKShippingMethod,
         handler completion: @escaping (PKPaymentRequestShippingMethodUpdate) -> Void
     ) {
         guard hasListeners else {
-            completion(PKPaymentRequestShippingMethodUpdate(paymentSummaryItems: controller.paymentRequest.paymentSummaryItems))
+            completion(PKPaymentRequestShippingMethodUpdate(paymentSummaryItems: self.currentRequest?.paymentSummaryItems ?? []))
             return
         }
 
